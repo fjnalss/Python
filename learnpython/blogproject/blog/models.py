@@ -23,13 +23,16 @@ class Article(models.Model):
 	create_time = models.DateTimeField()
 	modified_time = models.DateTimeField()
 	page_views = models.IntegerField(default=0)
-	comment = models.TextField(blank=True)
+	#comment = models.TextField(blank=True)
 	category = models.ForeignKey(Category, default='其他', on_delete=models.SET_DEFAULT)
 	tags = models.ManyToManyField(Tag, blank=True)
 	author = models.ForeignKey(User, on_delete=models.CASCADE)
 
 	def __str__(self):
 		return self.title
+
+  	def Meta:
+  		ordering = ['-create_time', 'title']
 
 
 
