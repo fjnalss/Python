@@ -31,8 +31,14 @@ class Article(models.Model):
 	def __str__(self):
 		return self.title
 
-  	def Meta:
-  		ordering = ['-create_time', 'title']
+
+	class Meta:
+		ordering = ['-create_time', 'title']
+
+
+	def increase_views(self):
+		self.page_views += 1
+		self.save(update_fields=['page_views'])
 
 
 
