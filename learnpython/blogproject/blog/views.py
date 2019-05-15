@@ -10,7 +10,7 @@ class IndexView(generic.ListView):
 	model = Article
 	template_name = 'blog/index.html'
 	context_object_name = 'article_list'
-	paginate_by = 5
+	paginate_by = 2
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
@@ -25,11 +25,11 @@ class IndexView(generic.ListView):
 		if not is_paginated:
 			return {}
 		left = []
-		right = []
+		right = []  #当前页后边连续的页码号
 		left_has_more = False
-		right_has_more = False
-		first = False
-		last = False
+		right_has_more = False  #标示最后一页的页码前是否需要显示省略号
+		first = False  #标示是否需要显示第一页的页码
+		last = False   #标示是否需要显示最后一页的页码
 		current_page_num = current_page.number
 		total_pages = paginator.num_pages
 		page_range = paginator.page_range
@@ -37,6 +37,34 @@ class IndexView(generic.ListView):
 			right = page_range[current_page_num:current_page_num + 2]
 			if right[-1] < total_pages - 1:
 				right_has_more = True
+			if right[-1] < total_pages:
+				last = True
+		elif current_page_num == total_pages:
+			left = page_range[(current_page_num - 3) if (current_page_num - 3) > 0 else 0:current_page_num - 1]
+			if left[0] > 2:
+				left_has_more = True
+			if left[0] > 1:
+				first = True
+		else:
+			left = page_range[(current_page_num - 3) if (current_page_num -3) >0 else 0:current_page_num - 1]
+			right = page_range[current_page_num:current_page_num + 2]
+			if right[-1] < total_pages - 1:
+				right_has_more = True
+			if right[-1] < total_pages:
+				last = True
+			if left[0] > 2:
+				left_has_more = True
+			if left[0] > 1:
+				first = True
+		data = {
+				   'left':left,
+				   'right':right,
+				   'left_has_more':left_has_more,
+				   'right_has_more':right_has_more,
+				   'first':first,
+		           'last':last
+		}
+		return data
 
 
 class DetailView(generic.DetailView):
@@ -57,7 +85,6 @@ class DetailView(generic.DetailView):
 		comment_list = self.object.comment_set.all()
 		context.update({'form': form, 'comment_list': comment_list})
 		return context
-
 
 
 class ArchiveView(IndexView):
