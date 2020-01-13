@@ -1,0 +1,44 @@
+
+{% block main %}
+    {% if error_msg %}
+        <p>{{ error_msg }}</p>
+    {% endif %}
+    <p>
+        <span>欢迎{{request.session.user_name}}</span>
+        <span><a href="{% url 'verify:logout' %}">注销</a></span>
+    </p>
+        <span>输入验证域名：</span><br>
+        <form action="{% url 'verify:verify' %}" method="post">
+            {% csrf_token %}
+            <textarea name="domains" placeholder="多个换行" rows="10" cols="40" id="domains"></textarea>
+            <input type="submit" value="验证">
+        </form>
+
+    {% if is_paginated %}
+    <div class="pagination">
+        {% if first %}
+            <a href="?page=1">1</a>
+        {% endif %}
+        {% if left %}
+            {% if left_has_more %}
+                <span>...</span>
+            {% endif %}
+            {% for i in left %}
+                <a href="?page={{ i }}">{{ i }}</a>
+            {% endfor %}
+        {% endif %}
+        <a href="?page={{ page_obj.number }}" style="color: red">{{ page_obj.number }}</a>
+        {% if right %}
+            {% for i in right %}
+                <a href="?page={{ i }}">{{ i }}</a>
+            {% endfor %}
+            {% if right_has_more %}
+                <span>...</span>
+            {% endif %}
+        {% endif %}
+        {% if last %}
+            <a href="?page={{ paginator.num_pages }}">{{ paginator.num_pages }}</a>
+        {% endif %}
+    </div>
+    {% endif %}
+{% endblock main %}

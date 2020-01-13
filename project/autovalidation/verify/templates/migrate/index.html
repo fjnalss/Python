@@ -1,0 +1,14 @@
+{% if error_msg %}
+    <p>{{ error_msg }}</p>
+{% endif %}
+<p>
+    <span>欢迎{{request.session.user_name}}{{request.session.user_id}}</span>
+    <span><a href="{% url 'verify:logout' %}">注销</a></span>
+</p>
+<form action="{% url 'verify:migrate' %}" method="post">
+    {% csrf_token %}
+    <input type="text" name="domain" placeholder="域名">
+    <input type="submit" value="查询">
+</form>
+{% block main %}
+{% endblock main %}
