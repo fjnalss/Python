@@ -2,13 +2,14 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from .models import User, Oui, Url, Result
+from .models import User, Oui, Url, Result, Sam, Config
 import requests
-from openpyxl import  Workbook
+from openpyxl import Workbook
 from io import BytesIO
 from django.utils.http import urlquote
 import datetime
-from .sam import Oho, Url
+from . import transfer_rule
+
 
 
 @login_required(login_url='/autovalidation/login')
@@ -124,6 +125,22 @@ def migrate(request):
         return render(request, 'migrate/index.html')
     elif request.method == 'POST':
         domain = request.POST.get('domain')
-        return render(request, 'migrate/migrate.html', {'domain': domain})
+        transfer(domain)
+        config = Config.objects.filter(domain=domain)
+        return render(request, 'migrate/migrate.html', {'domain': domain, 'config': config})
     else:
         return render(request, 'migrate/index.html', {'error_msg': "请求方法有问题"})
+
+
+#进行所有功能转换，具体功能调用不同的规则
+def transfer(domain):
+    action_id = Sam.objects.filter(domain=domain).values_list('action_id', flat=True)
+    condition_id = Sam.objects.filter(domain=domain).values_list('condition_id', flat=True)
+    ruleid = zip(action_id, condition_id)
+    transfer_rule.oho_url(domain)
+
+
+
+
+
+

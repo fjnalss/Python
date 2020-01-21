@@ -8,6 +8,39 @@
 from django.db import models
 
 
+class ActionOho(models.Model):
+    h = models.CharField(max_length=255, blank=True, null=True)
+    value = models.CharField(max_length=255, blank=True, null=True)
+    on = models.CharField(max_length=3, blank=True, null=True)
+    mode = models.CharField(max_length=1, blank=True, null=True)
+    domain = models.CharField(max_length=255, blank=True, null=True)
+    objects = models.Manager()  # 解决views使用类.objects提示没有该属性
+
+    class Meta:
+        managed = False
+        db_table = 'action_oho'
+
+
+class ConditionUrl(models.Model):
+    m = models.CharField(max_length=255, blank=True, null=True)
+    domain = models.CharField(max_length=255, blank=True, null=True)
+    objects = models.Manager()
+
+    class Meta:
+        managed = False
+        db_table = 'condition_url'
+
+
+class Config(models.Model):
+    domain = models.CharField(max_length=255, blank=True, null=True)
+    config = models.TextField(blank=True, null=True)
+    objects = models.Manager()
+
+    class Meta:
+        managed = False
+        db_table = 'config'
+
+
 class Oui(models.Model):
     domain_id = models.SmallIntegerField(primary_key=True)
     domain = models.CharField(max_length=30)
@@ -15,7 +48,7 @@ class Oui(models.Model):
     rewrite_url = models.CharField(max_length=255, blank=True, null=True)
     gzip_compressed = models.CharField(max_length=1, blank=True, null=True)
     sam = models.TextField(blank=True, null=True)
-    objects = models.Manager() #解决views使用类.objects提示没有该属性
+    objects = models.Manager()
 
     class Meta:
         managed = False
@@ -33,6 +66,18 @@ class Result(models.Model):
     class Meta:
         managed = False
         db_table = 'result'
+
+
+class Sam(models.Model):
+    action_id = models.CharField(max_length=4)
+    condition_id = models.CharField(max_length=4, blank=True, null=True)
+    domain = models.CharField(max_length=255, blank=True, null=True)
+    rulejson = models.TextField(blank=True, null=True)
+    objects = models.Manager()
+
+    class Meta:
+        managed = False
+        db_table = 'sam'
 
 
 class Url(models.Model):

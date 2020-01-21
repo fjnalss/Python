@@ -17,9 +17,6 @@ def main():
         for rule in sam_dict:
             print(type(rule))
             print(rule)
-            # data = json.loads(rule)
-            # print(type(data))
-            # print(data)
             for item in rule:
                 if "actionid" in item:
                     print(item['actionid'])

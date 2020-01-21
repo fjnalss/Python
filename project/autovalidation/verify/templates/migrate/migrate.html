@@ -1,4 +1,8 @@
 {% extends 'migrate/index.html' %}
 {% block main %}
 {{ domain }}
+<br>
+{% for c in config %}
+    {{ c.config }}
+{% endfor %}
 {% endblock main %}
